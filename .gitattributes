@@ -1,0 +1,4 @@
+# The installer pins a SHA-256 of the sensor file; keep line endings fixed so a checkout hashes the same as the download.
+*.ps1 text eol=lf
+*.md text eol=lf
+*.json text eol=lf

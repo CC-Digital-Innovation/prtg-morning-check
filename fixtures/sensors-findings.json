@@ -1,0 +1,13 @@
+{
+  "prtg-version": "25.2.106.1114",
+  "treesize": 7,
+  "sensors": [
+    { "objid": 9001, "probe": "Local Probe", "group": "Morning Check", "device": "Morning Check", "name": "Morning Check", "status": "Down", "status_raw": 5, "message": "3 to check" },
+    { "objid": 4412, "probe": "Local Probe", "group": "[ACME] Store 12", "device": "Store 12 Router", "name": "Ping", "status": "Down", "status_raw": 5, "message": "Request timed out" },
+    { "objid": 4418, "probe": "Local Probe", "group": "[ACME] Store 12", "device": "Store 12 Router", "name": "Primary Interface", "status": "Down (Acknowledged)", "status_raw": 13, "message": "Carrier ticket 2211 open" },
+    { "objid": 5107, "probe": "Remote Probe North", "group": "[ACME] Warehouse", "device": "Dock Camera 3", "name": "Ping", "status": "Down (Acknowledged)", "status_raw": 13, "message": "PoE injector on order" },
+    { "objid": 6120, "probe": "Local Probe", "group": "[NORTHWIND] HQ", "device": "Core Switch A", "name": "SSL Certificate (Port 443)", "status": "Down (Partial)", "status_raw": 14, "message": "Certificate expires in 3 days" },
+    { "objid": 6290, "probe": "Local Probe", "group": "[NORTHWIND] HQ", "device": "Backup & Archive NAS", "name": "SNMP Disk Free", "status": "Unknown", "status_raw": 1, "message": "No data yet" },
+    { "objid": 7001, "probe": "Local Probe", "group": "Lab", "device": "Bench Switch", "name": "Ping", "status": "Down", "status_raw": 5, "message": "Powered off" }
+  ]
+}

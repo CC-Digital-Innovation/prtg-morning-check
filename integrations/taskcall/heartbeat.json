@@ -1,0 +1,20 @@
+{
+  "check_type": "HEARTBEAT",
+  "check_name": "Morning check <server>",
+  "description": "Dead-man switch for the daily morning check. Pinged by the PRTG notification engine on the sensor's Down trigger, so a missed ping means the schedule, the sensor, the core or the notification engine failed.",
+  "service_ref_id": "REPLACE_WITH_SERVICE_REF",
+  "ping_type": "HTTP",
+  "url": "FROM_ENDPOINTS_CALL",
+  "email": "FROM_ENDPOINTS_CALL",
+  "interval": 88200,
+  "grace_period": 0,
+  "task_title": "Morning check missed",
+  "text_msg": "The morning check did not report in. Check the PRTG schedule, the Morning Check sensor and the notification engine on the core.",
+  "urgency_level": 4,
+  "tags": [
+    "morning-check"
+  ],
+  "ip_address": null,
+  "email_from": null,
+  "check_ref_id": "FROM_ENDPOINTS_CALL"
+}

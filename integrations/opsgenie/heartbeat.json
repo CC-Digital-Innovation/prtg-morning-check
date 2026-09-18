@@ -1,0 +1,11 @@
+{
+  "name": "morning-check-<server>",
+  "description": "Dead-man switch for the daily morning check, pinged by the PRTG notification engine on the sensor's Down trigger.",
+  "interval": 1470,
+  "intervalUnit": "minutes",
+  "enabled": true,
+  "alertMessage": "Morning check missed",
+  "alertPriority": "P2",
+  "alertTags": ["morning-check"],
+  "ownerTeam": { "name": "REPLACE_WITH_TEAM" }
+}

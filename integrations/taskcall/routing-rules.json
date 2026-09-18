@@ -1,0 +1,110 @@
+[
+  {
+    "rule_name": "Morning check: all clear",
+    "rule_description": "Daily morning check with nothing to report: route to the target service under a plain title at low urgency",
+    "timezone": "REPLACE_WITH_TIMEZONE",
+    "allow_multiple": false,
+    "valid_start": "REPLACE_WITH_START_DATE",
+    "valid_end": "9999-01-01",
+    "rule_start_time": "00:00:00",
+    "rule_end_time": "23:59:00",
+    "repeat": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "rule_application_count": 3,
+    "routing_actions": {
+      "alert_handling": "RE_ROUTE_SERVICE",
+      "route_to_service": "REPLACE_WITH_SERVICE_REF",
+      "dedup_key_field": "{{ source_payload.sitename }}:{{ source_payload.deviceid }}",
+      "incident_title_field": "Morning Check: all clear",
+      "urgency_level": 2,
+      "tags": [
+        "PRTG",
+        "morning-check",
+        "{{ source_payload.sitename }}"
+      ],
+      "incident_description_field": "{{ source_payload.lastmessage }}\n\nSensor: {{ source_payload.linksensor }}"
+    },
+    "routing_rules": [
+      {
+        "rule_type": "payload",
+        "field_name": "source_payload.sitename",
+        "comparator": "equals",
+        "field_value": "REPLACE_WITH_PRTG_SITENAME"
+      },
+      {
+        "rule_type": "payload",
+        "field_name": "source_payload.device",
+        "comparator": "equals",
+        "field_value": "Morning Check"
+      },
+      {
+        "rule_type": "payload",
+        "field_name": "source_payload.lastmessage",
+        "comparator": "contains",
+        "field_value": "ALL CLEAR"
+      }
+    ],
+    "is_enabled": true
+  },
+  {
+    "rule_name": "Morning check: to check",
+    "rule_description": "Daily morning check with sensors to look at: route to the target service with the counts in the title",
+    "timezone": "REPLACE_WITH_TIMEZONE",
+    "allow_multiple": false,
+    "valid_start": "REPLACE_WITH_START_DATE",
+    "valid_end": "9999-01-01",
+    "rule_start_time": "00:00:00",
+    "rule_end_time": "23:59:00",
+    "repeat": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "rule_application_count": 3,
+    "routing_actions": {
+      "alert_handling": "RE_ROUTE_SERVICE",
+      "route_to_service": "REPLACE_WITH_SERVICE_REF",
+      "dedup_key_field": "{{ source_payload.sitename }}:{{ source_payload.deviceid }}",
+      "incident_title_field": "Morning Check: {{ source_payload.lastmessage | ^[^|\\n]+[^ |\\n] }}",
+      "urgency_level": 3,
+      "tags": [
+        "PRTG",
+        "morning-check",
+        "{{ source_payload.sitename }}"
+      ],
+      "incident_description_field": "{{ source_payload.lastmessage }}\n\nSensor: {{ source_payload.linksensor }}"
+    },
+    "routing_rules": [
+      {
+        "rule_type": "payload",
+        "field_name": "source_payload.sitename",
+        "comparator": "equals",
+        "field_value": "REPLACE_WITH_PRTG_SITENAME"
+      },
+      {
+        "rule_type": "payload",
+        "field_name": "source_payload.device",
+        "comparator": "equals",
+        "field_value": "Morning Check"
+      },
+      {
+        "rule_type": "payload",
+        "field_name": "source_payload.lastmessage",
+        "comparator": "contains",
+        "field_value": "to check"
+      }
+    ],
+    "is_enabled": true
+  }
+]

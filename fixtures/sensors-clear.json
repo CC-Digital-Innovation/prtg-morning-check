@@ -1,0 +1,7 @@
+{
+  "prtg-version": "25.2.106.1114",
+  "treesize": 1,
+  "sensors": [
+    { "objid": 9001, "probe": "Local Probe", "group": "Morning Check", "device": "Morning Check", "name": "Morning Check", "status": "Down", "status_raw": 5, "message": "ALL CLEAR" }
+  ]
+}

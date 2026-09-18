@@ -1,0 +1,6 @@
+# Filled-in deploy settings (holds the admin passhash)
+settings.json
+
+# OS
+.DS_Store
+Thumbs.db

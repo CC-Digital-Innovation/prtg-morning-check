@@ -1,0 +1,20 @@
+{
+  "server":       "https://prtg.example.com",
+  "userName":     "prtgadmin",
+  "passHash":     "1234567890",
+  "probe":        "Local Probe",
+  "coreUrl":      "",
+  "windowStart":  "06:00",
+  "windowEnd":    "06:10",
+  "days":         "Mon Tue Wed Thu Fri Sat",
+  "excludeGroups":  "Lab",
+  "excludeSensors": "",
+  "excludeDevices": "",
+  "excludeProbes":  "",
+  "notification":         "",
+  "recoveryNotification": "",
+  "heartbeatNotification": "",
+  "ignoreCertificate":     false,
+  "acknowledgedIsClear":   false,
+  "namePrefix":            ""
+}
