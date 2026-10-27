@@ -76,8 +76,31 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# PRTG parses the output as UTF-8, but Windows PowerShell 5.1 writes it in the console
+# code page, so one non-ASCII character in a sensor name (a ® in a service name is enough)
+# arrives as an invalid byte and the whole result fails with PE231 "Structural error in xml
+# file". Writing every non-ASCII character as a numeric reference keeps the output pure
+# ASCII whatever the encoding, and PRTG shows the original character. Characters XML 1.0
+# forbids become a space; so do line breaks, which PRTG rejects inside <text> (PE233).
+function ConvertTo-PrtgText([string]$Text) {
+    $escaped = [System.Security.SecurityElement]::Escape($Text)
+    $sb = New-Object System.Text.StringBuilder
+    for ($i = 0; $i -lt $escaped.Length; $i++) {
+        $c = $escaped[$i]
+        $n = [int]$c
+        if ([char]::IsHighSurrogate($c) -and ($i + 1) -lt $escaped.Length -and [char]::IsLowSurrogate($escaped[$i + 1])) {
+            [void]$sb.Append("&#$([char]::ConvertToUtf32($c, $escaped[$i + 1]));"); $i++; continue
+        }
+        if ([char]::IsSurrogate($c) -or $n -eq 0xFFFE -or $n -eq 0xFFFF) { continue }
+        if ($n -lt 0x20 -or $n -eq 0x7F) { [void]$sb.Append(' '); continue }
+        if ($n -gt 0x7E) { [void]$sb.Append("&#$n;"); continue }
+        [void]$sb.Append($c)
+    }
+    $sb.ToString()
+}
+
 function Write-PrtgResult([string]$Text) {
-    "<prtg><error>1</error><text>$([System.Security.SecurityElement]::Escape($Text))</text></prtg>"
+    "<prtg><error>1</error><text>$(ConvertTo-PrtgText $Text)</text></prtg>"
 }
 
 function Split-List([string]$Csv) {

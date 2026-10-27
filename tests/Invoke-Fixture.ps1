@@ -45,7 +45,18 @@ Check 'reports a missing key as a sensor error'      ($out -match '<error>1</err
 $out = & $sensor -Token '%windowspassword' | Out-String
 Check 'reports an unfilled placeholder as an error'  ($out -match '<error>1</error>.*placeholder was not filled in') $out
 
+Write-Host 'non-ASCII and control characters in names (PE231 regression)'
+$out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-nonascii.json') -SelfSensorId 9001 | Out-String
+Check 'output is pure ASCII'          ($out -cmatch '^[\x20-\x7E\r\n]*$') $out
+Check 'registered sign as &#174;'     ($out -match 'Remote Support&#174; Agent') $out
+Check 'accent and en dash as refs'    ($out -match 'Caf&#233; Router &#8211; West') $out
+Check 'emoji as one code point'       ($out -match 'Emoji &#128512; Box') $out
+Check 'tab and VT become spaces'      ($out -match 'Tab and VT') $out
+Check 'parses as XML'                 ($(try { [xml]$out.Trim() | Out-Null; $true } catch { $false })) $out
+Check 'counts are unchanged'          ($out -match '4 to check: 1 unknown, 2 down, 1 acknowledged, 0 partial') $out
+
 Write-Host 'installer hash matches the sensor file'
+
 $installer = Get-Content -LiteralPath (Join-Path $root 'deploy\Install-MorningCheck.ps1') -Raw
 $pinned = [regex]::Match($installer, "\`$sha256\s*=\s*'([0-9a-f]{64})'").Groups[1].Value
 $actual = (Get-FileHash -LiteralPath $sensor -Algorithm SHA256).Hash.ToLower()

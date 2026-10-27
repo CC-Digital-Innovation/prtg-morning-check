@@ -64,10 +64,10 @@ resume into the post, and a notification template delivers it.
 2. **Install on the probe.** In an elevated PowerShell on the probe host:
 
    ```powershell
-   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.0/deploy/Install-MorningCheck.ps1 | iex
+   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.1/deploy/Install-MorningCheck.ps1 | iex
    ```
 
-   It downloads the sensor from the `v1.0.0` tag, checks its SHA-256
+   It downloads the sensor from the `v1.0.1` tag, checks its SHA-256
    against the hash written into the installer, and only then puts it into
    `Custom Sensors\EXEXML`. No restart; the probe reads the script on every
    scan. Re-run it to upgrade. From a checkout,
@@ -77,7 +77,7 @@ resume into the post, and a notification template delivers it.
 3. **Create the PRTG objects.** From any machine that reaches the core:
 
    ```powershell
-   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.0/deploy/Deploy-MorningCheck.ps1 | iex
+   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.1/deploy/Deploy-MorningCheck.ps1 | iex
    ```
 
    It asks for the core URL, an admin login and the sensor's API key, then
@@ -165,6 +165,12 @@ from the synthetic fixtures in `fixtures/`, so the names are made up.
 ```
 ALL CLEAR: 0 unknown, 0 down, 0 acknowledged, 0 partial
 ```
+
+The sensor writes its result as plain ASCII. Windows PowerShell 5.1 outputs in the console
+code page while PRTG reads UTF-8, so a single `®` or accented letter in any listed sensor's
+name used to fail the whole run with PE231 "Structural error in xml file". Non-ASCII
+characters now go out as numeric references (`&#174;`) and PRTG shows the original character;
+control characters and line breaks become spaces.
 
 The sensor log for a 06:00 to 06:10 window, oldest first:
 
