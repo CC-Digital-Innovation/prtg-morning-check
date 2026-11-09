@@ -45,8 +45,9 @@
     listed, but do not count towards "to check".
 
 .PARAMETER MaxChars
-    Message budget. PRTG caps a sensor message at 2000 characters, so the
-    header goes first and the list is cut with a "+N more" marker.
+    Message budget, counted on the escaped text PRTG reads (">" is "&gt;").
+    PRTG cuts a sensor message at 2000 characters, so the header goes first
+    and the list is cut with a "+N more" marker that also fits the budget.
 
 .PARAMETER IgnoreCertificate
     Skip certificate validation, for a core with a self-signed certificate.
@@ -101,6 +102,11 @@ function ConvertTo-PrtgText([string]$Text) {
 
 function Write-PrtgResult([string]$Text) {
     "<prtg><error>1</error><text>$(ConvertTo-PrtgText $Text)</text></prtg>"
+}
+
+# For text that is already escaped: the list is budgeted on its escaped length, so it goes out as is.
+function Write-PrtgEscaped([string]$Escaped) {
+    "<prtg><error>1</error><text>$Escaped</text></prtg>"
 }
 
 function Split-List([string]$Csv) {
@@ -205,12 +211,18 @@ $sections = @(
 # One line: PRTG rejects line breaks inside <text> (error PE233), so the
 # entries are joined with " | ". The list is cut at the first entry that
 # does not fit, so the Down entries at the front always make it.
+# The budget counts the ESCAPED text, the characters PRTG actually reads: every " > " is
+# " &gt; " on the wire, and PRTG cuts <text> at 2000 characters, so a list sized on the raw
+# text ran past it, lost "</text></prtg>" and failed with PE231 "2 open items". That
+# happened exactly when a site probe was offline and all its sensors were listed.
 $sep = ' | '
-$lines = @(foreach ($sec in $sections) { foreach ($s in $sec.Items) { "$sep$($sec.Tag): $(Format-Line $s)" } })
-$text = $header
+$lines = @(foreach ($sec in $sections) { foreach ($s in $sec.Items) { ConvertTo-PrtgText "$sep$($sec.Tag): $(Format-Line $s)" } })
+$text = ConvertTo-PrtgText $header
 for ($i = 0; $i -lt $lines.Count; $i++) {
-    if (($text.Length + $lines[$i].Length) -gt $MaxChars) { $text += "$sep+$($lines.Count - $i) more"; break }
+    $more = ConvertTo-PrtgText "$sep+$($lines.Count - $i) more"
+    $room = if ($i -lt $lines.Count - 1) { $MaxChars - $more.Length } else { $MaxChars }
+    if (($text.Length + $lines[$i].Length) -gt $room) { $text += $more; break }
     $text += $lines[$i]
 }
 
-Write-PrtgResult $text
+Write-PrtgEscaped $text

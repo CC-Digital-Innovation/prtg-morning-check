@@ -24,7 +24,7 @@
     The sensor must already be in the probe's Custom Sensors\EXEXML folder
     (Install-MorningCheck.ps1 does that). Run this script straight from
     GitHub for the interactive setup:
-      irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.1/deploy/Deploy-MorningCheck.ps1 | iex
+      irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.2/deploy/Deploy-MorningCheck.ps1 | iex
 
 .PARAMETER SettingsFile
     A JSON file with the same settings as the parameters, in plain words:

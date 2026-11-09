@@ -1,0 +1,211 @@
+{
+ "sensors": [
+  {
+   "objid": "8001",
+   "probe": "Local Probe",
+   "group": "Carrier B",
+   "device": "Site101",
+   "name": "Ping",
+   "status": "Down",
+   "status_raw": 5
+  },
+  {
+   "objid": "8100",
+   "probe": "Site101 MASTER",
+   "group": "Site101 MASTER",
+   "device": "Probe Device",
+   "name": "Probe Health",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8101",
+   "probe": "Site101 MASTER",
+   "group": "Site101 MASTER",
+   "device": "Probe Device",
+   "name": "System Health",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8102",
+   "probe": "Site101 MASTER",
+   "group": "Site101 MASTER",
+   "device": "Probe Device",
+   "name": "Disk Free",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8103",
+   "probe": "Site101 MASTER",
+   "group": "Site101 MASTER",
+   "device": "Probe Device",
+   "name": "Intel[R] Ethernet Connection [19] I219-L",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8200",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "Ping",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8201",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "Uptime",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8202",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "Signal Strength",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8203",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "enterprises / {1-5}",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8204",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "(003) eth0 Traffic",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8205",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "(005) primarylan1 Traffic",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8206",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "(013) eth0.1 Traffic",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8207",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "(014) eth0.2 Traffic",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8208",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "Primary Interface",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8300",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101] api.payments.example.com",
+   "name": "Ping",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8301",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101] api.payments.example.com",
+   "name": "Ping Jitter",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8302",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101] api.payments.example.com",
+   "name": "HTTP Full Web Page",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8310",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101] d.terminals.example.com",
+   "name": "Ping",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8311",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101] d.terminals.example.com",
+   "name": "Ping Jitter",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8312",
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101] d.terminals.example.com",
+   "name": "HTTP Full Web Page",
+   "status": "Unknown",
+   "status_raw": 1
+  },
+  {
+   "objid": "8400",
+   "probe": "Site200 MASTER",
+   "group": "Site200 MASTER",
+   "device": "Probe Device",
+   "name": "Disk Free",
+   "status": "Down (Acknowledged)",
+   "status_raw": 13
+  },
+  {
+   "objid": "8401",
+   "probe": "Site201 MASTER",
+   "group": "Site201 MASTER",
+   "device": "Probe Device",
+   "name": "Disk Free",
+   "status": "Down (Acknowledged)",
+   "status_raw": 13
+  },
+  {
+   "objid": "8402",
+   "probe": "Site202 MASTER",
+   "group": "Site202 MASTER",
+   "device": "Probe Device",
+   "name": "Disk Free",
+   "status": "Down (Acknowledged)",
+   "status_raw": 13
+  }
+ ]
+}

@@ -55,6 +55,19 @@ Check 'tab and VT become spaces'      ($out -match 'Tab and VT') $out
 Check 'parses as XML'                 ($(try { [xml]$out.Trim() | Out-Null; $true } catch { $false })) $out
 Check 'counts are unchanged'          ($out -match '4 to check: 1 unknown, 2 down, 1 acknowledged, 0 partial') $out
 
+Write-Host 'site probe offline: long list stays inside 2000 escaped characters (PE231 regression)'
+$out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-probe-offline.json') -SelfSensorId 9001 | Out-String
+$text = [regex]::Match($out, '<text>(.*)</text>').Groups[1].Value
+Check 'closing tags are present'      ($out -match '</text></prtg>') $out
+Check 'escaped <text> fits in 2000'   ($text.Length -le 2000) "$($text.Length) characters"
+Check 'escaped <text> fits MaxChars'  ($text.Length -le 1900) "$($text.Length) characters"
+Check 'list is cut with +N more'      ($out -match '\+\d+ more</text>') $out
+Check 'DOWN entry kept at the front'  ($out -match 'to check: \d+ unknown, 1 down.*\| DOWN: Local Probe') $out
+Check 'parses as XML'                 ($(try { [xml]$out.Trim() | Out-Null; $true } catch { $false })) $out
+$out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-probe-offline.json') -SelfSensorId 9001 -MaxChars 600 | Out-String
+$text = [regex]::Match($out, '<text>(.*)</text>').Groups[1].Value
+Check 'a small budget is kept too'    ($text.Length -le 600) "$($text.Length) characters"
+
 Write-Host 'installer hash matches the sensor file'
 
 $installer = Get-Content -LiteralPath (Join-Path $root 'deploy\Install-MorningCheck.ps1') -Raw

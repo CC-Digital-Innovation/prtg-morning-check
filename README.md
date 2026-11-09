@@ -32,7 +32,7 @@ On a probe, the sensor's Parameters field:
   notification template you already use for email, chat or an on-call
   platform. A clean morning reads
   `ALL CLEAR: 0 unknown, 0 down, 0 acknowledged, 0 partial`. PRTG allows a
-  sensor message one line long and up to 2000 characters, so the list uses
+  sensor message one line long and up to 2000 characters (escaped), so the list uses
   ` | ` between entries and a long one ends in `+N more`. The cut starts
   from the acknowledged end, so the Down entries go in first.
 - **Proof the check ran.** A schedule keeps the sensor paused outside a
@@ -64,10 +64,10 @@ resume into the post, and a notification template delivers it.
 2. **Install on the probe.** In an elevated PowerShell on the probe host:
 
    ```powershell
-   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.1/deploy/Install-MorningCheck.ps1 | iex
+   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.2/deploy/Install-MorningCheck.ps1 | iex
    ```
 
-   It downloads the sensor from the `v1.0.1` tag, checks its SHA-256
+   It downloads the sensor from the `v1.0.2` tag, checks its SHA-256
    against the hash written into the installer, and only then puts it into
    `Custom Sensors\EXEXML`. No restart; the probe reads the script on every
    scan. Re-run it to upgrade. From a checkout,
@@ -77,7 +77,7 @@ resume into the post, and a notification template delivers it.
 3. **Create the PRTG objects.** From any machine that reaches the core:
 
    ```powershell
-   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.1/deploy/Deploy-MorningCheck.ps1 | iex
+   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.2/deploy/Deploy-MorningCheck.ps1 | iex
    ```
 
    It asks for the core URL, an admin login and the sensor's API key, then
@@ -171,6 +171,11 @@ code page while PRTG reads UTF-8, so a single `®` or accented letter in any lis
 name used to fail the whole run with PE231 "Structural error in xml file". Non-ASCII
 characters now go out as numeric references (`&#174;`) and PRTG shows the original character;
 control characters and line breaks become spaces.
+
+The 2000-character limit applies to the escaped text PRTG reads, so the sensor budgets the
+list on that: every `>` goes out as `&gt;`, and a list sized on the raw text ran past PRTG's
+cut, lost its closing tags and failed with PE231 "2 open items". That happened on mornings
+when a site probe was offline and all its sensors were listed, up to version 1.0.1.
 
 The sensor log for a 06:00 to 06:10 window, oldest first:
 
