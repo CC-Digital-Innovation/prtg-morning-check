@@ -44,6 +44,12 @@
     Treat Down (Acknowledged) sensors as already handled: they are still
     listed, but do not count towards "to check".
 
+.PARAMETER CollapseAt
+    A device with this many sensors or more in the same state is written as
+    one entry, "probe > group > device (N sensors)", so a probe or device
+    that is offline takes one entry per device and the rest of the list
+    still fits. The header keeps counting sensors. 0 lists every sensor.
+
 .PARAMETER MaxChars
     Message budget, counted on the escaped text PRTG reads (">" is "&gt;").
     PRTG cuts a sensor message at 2000 characters, so the header goes first
@@ -70,6 +76,7 @@ param(
     [string]$ExcludeDevices = '',
     [string]$ExcludeSensors = '',
     [switch]$AcknowledgedIsClear,
+    [int]$CollapseAt = 3,
     [int]$MaxChars = 1900,
     [switch]$IgnoreCertificate,
     [string]$FixtureFile = ''
@@ -125,7 +132,27 @@ function Test-Excluded($Sensor, [hashtable]$Rules) {
     return $false
 }
 
-function Format-Line($s) { "$($s.probe) > $($s.group) > $($s.device) > $($s.name)" }
+function Format-Device($s) { "$($s.probe) > $($s.group) > $($s.device)" }
+function Format-Line($s) { "$(Format-Device $s) > $($s.name)" }
+
+# The entries for one state. Sensors are grouped by device in the order the devices first
+# appear. A device with $CollapseAt sensors or more becomes one entry with a count, because
+# when a probe or a device goes offline every sensor under it is listed and they all say the
+# same thing: fifteen lines for one offline probe fill the message and push the rest out.
+function Get-Entries($Items, [int]$CollapseAt) {
+    $order = New-Object System.Collections.Generic.List[string]
+    $byDevice = @{}
+    foreach ($s in $Items) {
+        $key = "$($s.probe)`n$($s.group)`n$($s.device)"
+        if (-not $byDevice.ContainsKey($key)) { $byDevice[$key] = New-Object System.Collections.ArrayList; $order.Add($key) }
+        [void]$byDevice[$key].Add($s)
+    }
+    foreach ($key in $order) {
+        $sensors = $byDevice[$key]
+        if ($CollapseAt -gt 0 -and $sensors.Count -ge $CollapseAt) { "$(Format-Device $sensors[0]) ($($sensors.Count) sensors)" }
+        else { foreach ($s in $sensors) { Format-Line $s } }
+    }
+}
 
 # ---------------------------------------------------------------- fetch ----
 try {
@@ -216,7 +243,7 @@ $sections = @(
 # text ran past it, lost "</text></prtg>" and failed with PE231 "2 open items". That
 # happened exactly when a site probe was offline and all its sensors were listed.
 $sep = ' | '
-$lines = @(foreach ($sec in $sections) { foreach ($s in $sec.Items) { ConvertTo-PrtgText "$sep$($sec.Tag): $(Format-Line $s)" } })
+$lines = @(foreach ($sec in $sections) { foreach ($entry in (Get-Entries $sec.Items $CollapseAt)) { ConvertTo-PrtgText "$sep$($sec.Tag): $entry" } })
 $text = ConvertTo-PrtgText $header
 for ($i = 0; $i -lt $lines.Count; $i++) {
     $more = ConvertTo-PrtgText "$sep+$($lines.Count - $i) more"

@@ -35,6 +35,12 @@ On a probe, the sensor's Parameters field:
   sensor message one line long and up to 2000 characters (escaped), so the list uses
   ` | ` between entries and a long one ends in `+N more`. The cut starts
   from the acknowledged end, so the Down entries go in first.
+- **One entry for an offline device.** A device with three or more sensors
+  in the same state is written once, as
+  `UNKNOWN: Site101 MASTER > [Site101] Network Devices > [Site101 MASTER] Router (9 sensors)`,
+  so a probe that drops overnight takes a few entries and leaves room for
+  the rest of the list. The header still counts sensors. `-CollapseAt 5` raises the
+  threshold and `-CollapseAt 0` lists every sensor.
 - **Proof the check ran.** A schedule keeps the sensor paused outside a
   short daily window. Inside the window the sensor goes Down, a device
   trigger sends the post, and at the end of the window the schedule pauses
@@ -64,10 +70,10 @@ resume into the post, and a notification template delivers it.
 2. **Install on the probe.** In an elevated PowerShell on the probe host:
 
    ```powershell
-   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.2/deploy/Install-MorningCheck.ps1 | iex
+   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.3/deploy/Install-MorningCheck.ps1 | iex
    ```
 
-   It downloads the sensor from the `v1.0.2` tag, checks its SHA-256
+   It downloads the sensor from the `v1.0.3` tag, checks its SHA-256
    against the hash written into the installer, and only then puts it into
    `Custom Sensors\EXEXML`. No restart; the probe reads the script on every
    scan. Re-run it to upgrade. From a checkout,
@@ -77,7 +83,7 @@ resume into the post, and a notification template delivers it.
 3. **Create the PRTG objects.** From any machine that reaches the core:
 
    ```powershell
-   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.2/deploy/Deploy-MorningCheck.ps1 | iex
+   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.3/deploy/Deploy-MorningCheck.ps1 | iex
    ```
 
    It asks for the core URL, an admin login and the sensor's API key, then
@@ -173,9 +179,15 @@ characters now go out as numeric references (`&#174;`) and PRTG shows the origin
 control characters and line breaks become spaces.
 
 The 2000-character limit applies to the escaped text PRTG reads, so the sensor budgets the
-list on that: every `>` goes out as `&gt;`, and a list sized on the raw text ran past PRTG's
-cut, lost its closing tags and failed with PE231 "2 open items". That happened on mornings
-when a site probe was offline and all its sensors were listed, up to version 1.0.1.
+list on that: every `>` goes out as `&gt;`.
+
+Up to version 1.0.2 a morning with a site probe offline listed every sensor under it, filled
+the budget and failed with PE231 "2 open items". 1.0.2 kept the message inside 2000 escaped
+characters and the same failure came back, so the 2000-character limit does not explain it.
+The cause is not confirmed. On the server where this was seen, no message longer than
+about 700 escaped characters has ever posted. From 1.0.3 an offline device is one entry, which
+keeps such a morning near 700. If a long list still fails for you, pass `-MaxChars 700` and
+set the sensor's result handling to "Write EXE result to disk" to see what PRTG received.
 
 The sensor log for a 06:00 to 06:10 window, oldest first:
 

@@ -74,6 +74,12 @@ other groups.
   is cut with `+N more` from the acknowledged end, so the Down entries go
   in first. Tighten the exclusions if the tail matters, or read the rest
   in PRTG.
+- **An offline probe lists every sensor under it.** When a probe or a
+  device drops, every sensor under it turns Unknown or Down. A device with
+  three or more sensors in the same state is written as one entry with a
+  count, `... > [Site101 MASTER] Router (9 sensors)`, so the message stays
+  short and the other findings are not pushed out. `-CollapseAt` sets the
+  threshold; 0 lists every sensor.
 - **A Down sensor lists itself.** The script drops its own object id, which
   is why the parameters carry `-SelfSensorId %sensorid`.
 - **Trigger latency is longer than the window.** A Root trigger with a

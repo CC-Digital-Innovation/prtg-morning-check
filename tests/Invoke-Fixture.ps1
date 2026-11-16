@@ -55,8 +55,23 @@ Check 'tab and VT become spaces'      ($out -match 'Tab and VT') $out
 Check 'parses as XML'                 ($(try { [xml]$out.Trim() | Out-Null; $true } catch { $false })) $out
 Check 'counts are unchanged'          ($out -match '4 to check: 1 unknown, 2 down, 1 acknowledged, 0 partial') $out
 
-Write-Host 'site probe offline: long list stays inside 2000 escaped characters (PE231 regression)'
+Write-Host 'site probe offline: a device with 3 or more sensors in one state is one entry'
 $out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-probe-offline.json') -SelfSensorId 9001 | Out-String
+$text = [regex]::Match($out, '<text>(.*)</text>').Groups[1].Value
+Check 'header still counts sensors'   ($out -match '23 to check: 19 unknown, 1 down, 3 acknowledged, 0 partial') $out
+Check 'router is one entry'           ($out -match 'UNKNOWN: Site101 MASTER &gt; \[Site101\] Network Devices &gt; \[Site101 MASTER\] Router \(9 sensors\)') $out
+Check 'probe device is one entry'     ($out -match 'Probe Device \(4 sensors\)') $out
+Check 'its sensors are not listed'    ($out -notmatch 'primarylan1 Traffic') $out
+Check 'a single sensor keeps its name' ($out -match 'DOWN: Local Probe &gt; Carrier B &gt; Site101 &gt; Ping') $out
+Check 'the whole list fits, no cut'   ($out -notmatch '\+\d+ more') $out
+Check 'acknowledged tail is kept'     ($out -match 'ACK: Site202 MASTER') $out
+Check 'message is under 800'          ($text.Length -le 800) "$($text.Length) characters"
+Check 'parses as XML'                 ($(try { [xml]$out.Trim() | Out-Null; $true } catch { $false })) $out
+$out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-probe-offline.json') -SelfSensorId 9001 -CollapseAt 10 | Out-String
+Check 'CollapseAt 10 keeps 9 listed'  ($out -match 'primarylan1 Traffic' -and $out -notmatch '\(\d+ sensors\)') $out
+
+Write-Host 'site probe offline, every sensor listed (-CollapseAt 0): the cut stays inside the budget'
+$out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-probe-offline.json') -SelfSensorId 9001 -CollapseAt 0 | Out-String
 $text = [regex]::Match($out, '<text>(.*)</text>').Groups[1].Value
 Check 'closing tags are present'      ($out -match '</text></prtg>') $out
 Check 'escaped <text> fits in 2000'   ($text.Length -le 2000) "$($text.Length) characters"
@@ -64,7 +79,7 @@ Check 'escaped <text> fits MaxChars'  ($text.Length -le 1900) "$($text.Length) c
 Check 'list is cut with +N more'      ($out -match '\+\d+ more</text>') $out
 Check 'DOWN entry kept at the front'  ($out -match 'to check: \d+ unknown, 1 down.*\| DOWN: Local Probe') $out
 Check 'parses as XML'                 ($(try { [xml]$out.Trim() | Out-Null; $true } catch { $false })) $out
-$out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-probe-offline.json') -SelfSensorId 9001 -MaxChars 600 | Out-String
+$out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-probe-offline.json') -SelfSensorId 9001 -CollapseAt 0 -MaxChars 600 | Out-String
 $text = [regex]::Match($out, '<text>(.*)</text>').Groups[1].Value
 Check 'a small budget is kept too'    ($text.Length -le 600) "$($text.Length) characters"
 
