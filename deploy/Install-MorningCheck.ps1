@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Run in an elevated PowerShell on the probe host, straight from GitHub:
-      irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.3/deploy/Install-MorningCheck.ps1 | iex
+      irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.4/deploy/Install-MorningCheck.ps1 | iex
 
     or from a checkout of this repo:
       .\deploy\Install-MorningCheck.ps1
@@ -27,8 +27,8 @@ $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 $file   = 'Get-MorningCheck.ps1'
-$ref    = 'v1.0.3'                                                              # the tag the sensor is fetched from
-$sha256 = 'd88cafb6bfc7525d20a7b85675178edde98cb90d973a9f7a5ff3ff0e8c001756'   # SHA-256 of sensor/Get-MorningCheck.ps1 at that tag
+$ref    = 'v1.0.4'                                                              # the tag the sensor is fetched from
+$sha256 = '2d23cb34d2f678bfc9367026eb5474cd9a0d21c0b937f8f3434a2fd0c5b0cc92'   # SHA-256 of sensor/Get-MorningCheck.ps1 at that tag
 $repo   = 'CC-Digital-Innovation/prtg-morning-check'
 $local  = if ($PSScriptRoot) { Join-Path (Split-Path -Parent $PSScriptRoot) "sensor\$file" } else { '' }
 

@@ -55,6 +55,14 @@ Check 'tab and VT become spaces'      ($out -match 'Tab and VT') $out
 Check 'parses as XML'                 ($(try { [xml]$out.Trim() | Out-Null; $true } catch { $false })) $out
 Check 'counts are unchanged'          ($out -match '4 to check: 1 unknown, 2 down, 1 acknowledged, 0 partial') $out
 
+Write-Host 'curly braces in names (PE231 regression: a {...} pair fails the whole result)'
+$out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-braces.json') -SelfSensorId 9001 | Out-String
+Check 'no curly brace in the output'  ($out -notmatch '[{}]') $out
+Check 'sensor name keeps its content' ($out -match 'UNKNOWN: Site101 MASTER .* Router &gt; enterprises / \(1-5\)') $out
+Check 'device name keeps its content' ($out -match 'DOWN: Local Probe &gt; Site B &gt; Switch \(core\) &gt; Ping') $out
+Check 'counts are unchanged'          ($out -match '2 to check: 1 unknown, 1 down, 0 acknowledged, 0 partial') $out
+Check 'parses as XML'                 ($(try { [xml]$out.Trim() | Out-Null; $true } catch { $false })) $out
+
 Write-Host 'site probe offline: a device with 3 or more sensors in one state is one entry'
 $out = & $sensor -FixtureFile (Join-Path $root 'fixtures\sensors-probe-offline.json') -SelfSensorId 9001 | Out-String
 $text = [regex]::Match($out, '<text>(.*)</text>').Groups[1].Value

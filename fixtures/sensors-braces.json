@@ -1,0 +1,36 @@
+{
+ "prtg-version": "25.2.106.1114",
+ "treesize": 1,
+ "sensors": [
+  {
+   "objid": 9001,
+   "probe": "Local Probe",
+   "group": "Morning Check",
+   "device": "Morning Check",
+   "name": "Morning Check",
+   "status": "Down",
+   "status_raw": 5,
+   "message": "ALL CLEAR"
+  },
+  {
+   "objid": 9201,
+   "probe": "Site101 MASTER",
+   "group": "[Site101] Network Devices",
+   "device": "[Site101 MASTER] Router",
+   "name": "enterprises / {1-5}",
+   "status": "Unknown",
+   "status_raw": 1,
+   "message": "No data"
+  },
+  {
+   "objid": 9202,
+   "probe": "Local Probe",
+   "group": "Site B",
+   "device": "Switch {core}",
+   "name": "Ping",
+   "status": "Down",
+   "status_raw": 5,
+   "message": "Request timed out"
+  }
+ ]
+}

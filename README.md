@@ -70,10 +70,10 @@ resume into the post, and a notification template delivers it.
 2. **Install on the probe.** In an elevated PowerShell on the probe host:
 
    ```powershell
-   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.3/deploy/Install-MorningCheck.ps1 | iex
+   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.4/deploy/Install-MorningCheck.ps1 | iex
    ```
 
-   It downloads the sensor from the `v1.0.3` tag, checks its SHA-256
+   It downloads the sensor from the `v1.0.4` tag, checks its SHA-256
    against the hash written into the installer, and only then puts it into
    `Custom Sensors\EXEXML`. No restart; the probe reads the script on every
    scan. Re-run it to upgrade. From a checkout,
@@ -83,7 +83,7 @@ resume into the post, and a notification template delivers it.
 3. **Create the PRTG objects.** From any machine that reaches the core:
 
    ```powershell
-   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.3/deploy/Deploy-MorningCheck.ps1 | iex
+   irm https://raw.githubusercontent.com/CC-Digital-Innovation/prtg-morning-check/v1.0.4/deploy/Deploy-MorningCheck.ps1 | iex
    ```
 
    It asks for the core URL, an admin login and the sensor's API key, then
@@ -181,13 +181,13 @@ control characters and line breaks become spaces.
 The 2000-character limit applies to the escaped text PRTG reads, so the sensor budgets the
 list on that: every `>` goes out as `&gt;`.
 
-Up to version 1.0.2 a morning with a site probe offline listed every sensor under it, filled
-the budget and failed with PE231 "2 open items". 1.0.2 kept the message inside 2000 escaped
-characters and the same failure came back, so the 2000-character limit does not explain it.
-The cause is not confirmed. On the server where this was seen, no message longer than
-about 700 escaped characters has ever posted. From 1.0.3 an offline device is one entry, which
-keeps such a morning near 700. If a long list still fails for you, pass `-MaxChars 700` and
-set the sensor's result handling to "Write EXE result to disk" to see what PRTG received.
+A matched pair of curly braces anywhere in the message fails the whole run with PE231
+"Structural error in xml file, 2 open items". One sensor named `enterprises / {1-5}` in the
+list is enough; a lone `{` or `}` is harmless. The sensor writes both as parentheses, so that
+name posts as `enterprises / (1-5)`. Up to version 1.0.3 this failed the run on any morning a
+router with such a sensor was unreachable, which is also when the list is longest, so the
+failure looked like a length problem. Length was not the cause: a message of 1829 escaped
+characters posts.
 
 The sensor log for a 06:00 to 06:10 window, oldest first:
 

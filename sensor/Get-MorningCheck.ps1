@@ -90,8 +90,13 @@ $ErrorActionPreference = 'Stop'
 # file". Writing every non-ASCII character as a numeric reference keeps the output pure
 # ASCII whatever the encoding, and PRTG shows the original character. Characters XML 1.0
 # forbids become a space; so do line breaks, which PRTG rejects inside <text> (PE233).
+#
+# A matched pair of curly braces anywhere in the output fails the result the same way:
+# "{1-5}" in a sensor name is enough to end in PE231 "Structural error in xml file, 2 open
+# items". A lone brace is harmless, a pair is not, so both become parentheses. Every site router with an "enterprises / {1-5}" sensor used to
+# fail the run on the morning that router was unreachable.
 function ConvertTo-PrtgText([string]$Text) {
-    $escaped = [System.Security.SecurityElement]::Escape($Text)
+    $escaped = [System.Security.SecurityElement]::Escape($Text.Replace('{', '(').Replace('}', ')'))
     $sb = New-Object System.Text.StringBuilder
     for ($i = 0; $i -lt $escaped.Length; $i++) {
         $c = $escaped[$i]
@@ -240,8 +245,7 @@ $sections = @(
 # does not fit, so the Down entries at the front always make it.
 # The budget counts the ESCAPED text, the characters PRTG actually reads: every " > " is
 # " &gt; " on the wire, and PRTG cuts <text> at 2000 characters, so a list sized on the raw
-# text ran past it, lost "</text></prtg>" and failed with PE231 "2 open items". That
-# happened exactly when a site probe was offline and all its sensors were listed.
+# text ran past it. A message of 1829 escaped characters posts.
 $sep = ' | '
 $lines = @(foreach ($sec in $sections) { foreach ($entry in (Get-Entries $sec.Items $CollapseAt)) { ConvertTo-PrtgText "$sep$($sec.Tag): $entry" } })
 $text = ConvertTo-PrtgText $header

@@ -74,6 +74,10 @@ other groups.
   is cut with `+N more` from the acknowledged end, so the Down entries go
   in first. Tighten the exclusions if the tail matters, or read the rest
   in PRTG.
+- **A pair of curly braces fails the result.** PRTG rejects a script
+  result whose message contains `{` followed later by `}` (error PE231,
+  "2 open items"), as with a sensor named `enterprises / {1-5}`. The
+  script writes both braces as parentheses.
 - **An offline probe lists every sensor under it.** When a probe or a
   device drops, every sensor under it turns Unknown or Down. A device with
   three or more sensors in the same state is written as one entry with a
